@@ -1,0 +1,175 @@
+metadata:
+  name: "python-to-typescript-migration"
+  description: "Code migration recipe for converting Python codebase to TypeScript"
+  owner: "development-team"
+  contact:
+    email: "dev-team@company.com"
+    slack: "#code-migration"
+  tags: ["code-migration", "python", "typescript", "language-conversion"]
+  priority: "medium"
+  estimated-downtime: "none"
+
+source:
+  type: "code-repository"
+  discovery:
+    locations:
+      - type: "git"
+        url: "github.com/company/python-app"
+        branch: "main"
+        paths: 
+          - "src/**/*.py"
+          - "tests/**/*.py"
+          - "requirements.txt"
+    analysis:
+      - "detect-python-patterns"
+      - "analyze-type-hints"
+      - "map-dependencies"
+
+  interfaces:
+    - type: "python-modules"
+      files: ["src/**/*.py"]
+    - type: "type-hints"
+      files: ["src/**/*.py"]
+    - type: "imports"
+      files: ["requirements.txt"]
+
+  dependencies:
+    python_packages:
+      - name: "pandas"
+        typescript_equivalent: "apache-arrow"
+      - name: "requests"
+        typescript_equivalent: "axios"
+      - name: "flask"
+        typescript_equivalent: "express"
+      - name: "pytest"
+        typescript_equivalent: "jest"
+
+  code_patterns:
+    - decorators:
+        usage: "common"
+        migration_strategy: "typescript-decorators"
+    - type_hints:
+        usage: "partial"
+        migration_strategy: "typescript-interfaces"
+    - list_comprehensions:
+        usage: "frequent"
+        migration_strategy: "array-methods"
+    - generators:
+        usage: "occasional"
+        migration_strategy: "iterators"
+    - async_await:
+        usage: "common"
+        migration_strategy: "promise-async-await"
+
+target:
+  language: "typescript"
+  version: "5.0"
+  configuration:
+    strict: true
+    target: "es2022"
+    module: "esnext"
+    types: ["node"]
+
+analysis:
+  code:
+    - type: "type-coverage"
+      tools: ["pyright"]
+      goal: "identify-existing-types"
+    - type: "usage-patterns"
+      scan: 
+        - "python-specific-features"
+        - "data-structures"
+        - "module-patterns"
+    - type: "dependencies"
+      analyze: "library-equivalents"
+
+validation:
+  stages:
+    - stage: "type-conversion"
+      checks:
+        - "valid-typescript"
+        - "type-completeness"
+        - "no-any-types"
+    - stage: "functionality"
+      checks:
+        - "unit-tests-pass"
+        - "behavior-unchanged"
+    - stage: "code-quality"
+      checks:
+        - "eslint-rules"
+        - "prettier-format"
+
+observability:
+  metrics:
+    - "type-coverage-percentage"
+    - "migration-progress"
+    - "test-coverage"
+    - "lint-violations"
+
+rollback:
+  strategy:
+    type: "file-by-file"
+    version_control: "git"
+
+ai_agent_instructions:
+  priorities:
+    - "maintain-code-functionality"
+    - "ensure-type-safety"
+    - "preserve-business-logic"
+    - "keep-code-readable"
+  
+  conversion_steps:
+    - step: "analyze-python-code"
+      actions:
+        - "identify-python-patterns"
+        - "map-type-hints"
+        - "list-dependencies"
+    
+    - step: "setup-typescript"
+      actions:
+        - "configure-tsconfig"
+        - "setup-build-tools"
+        - "install-dependencies"
+    
+    - step: "convert-code"
+      actions:
+        - "translate-syntax"
+        - "implement-types"
+        - "adapt-patterns"
+        - priority: "maintain-functionality"
+    
+    - step: "migrate-tests"
+      actions:
+        - "convert-pytest-to-jest"
+        - "ensure-coverage"
+    
+    - step: "verify"
+      actions:
+        - "run-type-checks"
+        - "execute-tests"
+        - "lint-code"
+
+  pattern_mappings:
+    python_to_typescript:
+      - pattern: "list_comprehension"
+        typescript: "array.map/filter"
+        example: |
+          # Python: [x * 2 for x in numbers if x > 0]
+          # TypeScript: numbers.filter(x => x > 0).map(x => x * 2)
+      
+      - pattern: "decorator"
+        typescript: "typescript-decorator"
+        example: |
+          # Python: @property
+          # TypeScript: @Property()
+      
+      - pattern: "type_hints"
+        typescript: "interface/type"
+        example: |
+          # Python: def process(data: List[str]) -> Dict[str, int]:
+          # TypeScript: function process(data: string[]): Record<string, number>
+
+  validation_rules:
+    - "ensure-no-any-types"
+    - "verify-test-coverage"
+    - "check-code-style"
