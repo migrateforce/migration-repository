@@ -1,87 +1,100 @@
-```markdown
 # NPM to PNPM Migration
 
 ## Overview
-
-This document outlines the process for migrating a Node.js project's package management from **npm** to **pnpm**. This migration leverages an AMRS Migrateforce recipe based approach, providing a structured and automated way to transition while minimizing risks and ensuring a smooth process. The migration will utilize LLM (Large Language Model) Agent Instructions derived from the AMRS recipe to guide and perform tasks.
+This document outlines the process for migrating a Node.js project's package management from **npm** to **pnpm**.  
+This migration leverages an AMRS Migrateforce recipe-based approach, providing a structured and automated way to transition while minimizing risks and ensuring a smooth process.  
+The migration will utilize LLM (Large Language Model) Agent Instructions derived from the AMRS recipe to guide and perform tasks.
 
 ## Current Status
-
-[x] Planning
-[ ] In Progress
-[ ] Completed
-[ ] Deprecated
+- [x] Planning  
+- [ ] In Progress  
+- [ ] Completed  
+- [ ] Deprecated  
 
 ## Benefits
-
-**Faster Installations:**  pnpm's content-addressable file system and hard linking lead to significantly faster package installations, especially in CI/CD environments.
-**Reduced Disk Space Usage:** pnpm stores dependencies in a global store and creates hard links to them in projects, saving considerable disk space compared to npm's duplicated `node_modules` folders.
-**Consistent Builds:** pnpm enforces strict dependency resolution, leading to more reliable and reproducible builds.
-**Monorepo Support:** pnpm offers first-class support for monorepos with features like workspaces, simplifying dependency management across multiple packages.
-**Improved Security:** pnpm's strictness helps prevent issues arising from phantom dependencies and version conflicts.
+- **Faster Installations:** pnpm's content-addressable file system and hard linking lead to significantly faster package installations, especially in CI/CD environments.  
+- **Reduced Disk Space Usage:** pnpm stores dependencies in a global store and creates hard links to them in projects, saving considerable disk space compared to npm's duplicated `node_modules` folders.  
+- **Consistent Builds:** pnpm enforces strict dependency resolution, leading to more reliable and reproducible builds.  
+- **Monorepo Support:** pnpm offers first-class support for monorepos with features like workspaces, simplifying dependency management across multiple packages.  
+- **Improved Security:** pnpm's strictness helps prevent issues arising from phantom dependencies and version conflicts.
 
 ## Challenges
-
-**Dependency Resolution Differences:** pnpm's approach to dependency resolution, while more robust, may differ slightly from npm's, potentially requiring adjustments in certain projects.
-**Script Handling:** Some npm lifecycle scripts that rely on implicit behaviors or environment variables might need modification for pnpm.
-**Tooling Compatibility:** While most modern tools support pnpm, some older or less-maintained tools may require updates or workarounds to function correctly.
-**Learning Curve:** Developers accustomed to npm will need to familiarize themselves with pnpm's commands and workflows.
-**Lockfile Conversion:** The migration involves converting `package-lock.json` to `pnpm-lock.yaml`, which must be done carefully to preserve dependency integrity.
+- **Dependency Resolution Differences:** pnpm's approach, while more robust, may require adjustments for projects that rely on npm's resolution strategies.  
+- **Script Handling:** Some npm lifecycle scripts relying on implicit behaviors may need modification to run smoothly under pnpm.  
+- **Tooling Compatibility:** Older or less-maintained tools might not fully support pnpm, requiring workarounds or updates.  
+- **Learning Curve:** Developers accustomed to npm will need to learn pnpm's commands and workflows.  
+- **Lockfile Conversion:** Careful conversion from `package-lock.json` to `pnpm-lock.yaml` is required to preserve dependency integrity.
 
 ## Migration Path
 
 ### 1. Analysis Phase
-
--   **Dependency Audit:** Analyze `package.json` and `package-lock.json` to understand the project's dependency tree and identify potential conflicts.
--   **Script Analysis:** Review existing npm scripts in `package.json` to determine which scripts need to be adapted for pnpm.
--   **Tooling Assessment:** Evaluate existing tools (CI/CD, build tools, etc.) for compatibility with pnpm and plan for any necessary updates.
--   **AMRS Recipe Review**: Ensure the AMRS recipe is correctly configured and understood.
+- **Dependency Audit:** Analyze `package.json` and `package-lock.json` to understand the project's dependency tree and identify potential conflicts.  
+- **Script Analysis:** Review existing npm scripts to see which need adaptation for pnpm.  
+- **Tooling Assessment:** Evaluate current tools (CI/CD, build tools, etc.) for pnpm compatibility and plan updates.  
+- **AMRS Recipe Review:** Confirm that the AMRS recipe is correctly configured and understood.
 
 ### 2. Setup Phase
+- **Install pnpm:**
+  ```bash
+  npm install -g pnpm
+  
+**Environment Setup:**  
+Configure the development environment for pnpm, including any necessary environment variables.
 
-**Install pnpm:** Install pnpm globally or locally as per project requirements.
-    ```bash
-    npm install -g pnpm
-    ```
-**Environment Setup:** Configure the development environment for pnpm, including any necessary environment variables.
-**Configure PNPM Workspace (Optional):** For monorepos, set up `pnpm-workspace.yaml` to define workspaces.
-**Adjust TSConfig (Optional):** If using TypeScript, verify that tsconfig.json remains compatible with the new module resolution strategy.
+**Configure PNPM Workspace (Optional):**  
+For monorepos, set up `pnpm-workspace.yaml` to define workspaces.
+
+**Adjust TSConfig (Optional):**  
+If using TypeScript, verify that `tsconfig.json` remains compatible with the new module resolution strategy.
+
+---
+
+
 
 ### 3. Migration Phase
 
-**Lockfile Conversion:** Use `pnpm import` to generate `pnpm-lock.yaml` from `package-lock.json`.
+-   **Lockfile Conversion:** Use `pnpm import` to generate `pnpm-lock.yaml` from `package-lock.json`.
+
     ```bash
     pnpm import
     ```
-**Dependency Installation:** Install dependencies using pnpm.
+
+-   **Dependency Installation:** Install dependencies using pnpm.
+
     ```bash
     pnpm install
     ```
-**Script Modification:** Update npm scripts in `package.json` to their pnpm equivalents.
+
+-   **Script Modification:** Update npm scripts in `package.json` to their pnpm equivalents.
+
     -   Example:
         -   `npm start` becomes `pnpm start`
         -   `npm run build` becomes `pnpm build`
         -   `npm test` becomes `pnpm test`
-**Tooling Updates:** Modify CI/CD pipelines, Dockerfiles, and other tools to use pnpm commands instead of npm.
+
+-   **Tooling Updates:** Modify CI/CD pipelines, Dockerfiles, and other tools to use pnpm commands instead of npm.
+
     -   Example: Replace `npm ci` with `pnpm install --frozen-lockfile` in CI scripts.
-**Refactor according to AMRS recipe**: Use the recipe to modify and update code patterns.
+
+-   **Refactor according to AMRS recipe:** Use the recipe to modify and update code patterns.
 
 ### 4. Validation Phase
 
-**Testing:** Run the project's test suite using `pnpm test` to ensure that all tests pass after the migration.
-**Build Verification:** Build the project using pnpm to confirm that the build process works correctly.
-**Functionality Checks:** Manually test key features of the application to verify that everything functions as expected.
-**Performance Testing:** Compare installation times and disk space usage before and after the migration to measure improvements.
-**Code Review:** Perform a code review of the changes made during the migration to ensure they are correct and maintainable.
-**Use AMRS validation rules:** Leverage defined validation rules and stages in the AMRS recipe for thorough checks.
+-   **Testing:** Run the project's test suite using `pnpm test` to ensure that all tests pass after the migration.
+-   **Build Verification:** Build the project using pnpm to confirm that the build process works correctly.
+-   **Functionality Checks:** Manually test key features of the application to verify that everything functions as expected.
+-   **Performance Testing:** Compare installation times and disk space usage before and after the migration to measure improvements.
+-   **Code Review:** Perform a code review of the changes made during the migration to ensure they are correct and maintainable.
+-   **Use AMRS validation rules:** Leverage defined validation rules and stages in the AMRS recipe for thorough checks.
 
 ### 5. Deployment Phase
 
-**Canary Deployment (Recommended):** Deploy the pnpm-based version of the application to a staging or canary environment for initial testing.
-**Monitoring:** Monitor the application closely for any issues or errors.
-**Full Deployment:** If the canary deployment is successful, proceed with a full deployment to production.
-**Rollback Plan:** Have a plan in place to revert to the npm-based version if significant issues are encountered.
-**Monitor metrics from AMRS recipe**: Observe metrics like install time, disk usage, and CI speed to confirm positive impact.
+-   **Canary Deployment (Recommended):** Deploy the pnpm-based version of the application to a staging or canary environment for initial testing.
+-   **Monitoring:** Monitor the application closely for any issues or errors.
+-   **Full Deployment:** If the canary deployment is successful, proceed with a full deployment to production.
+-   **Rollback Plan:** Have a plan in place to revert to the npm-based version if significant issues are encountered.
+-   **Monitor metrics from AMRS recipe:** Observe metrics like install time, disk usage, and CI speed to confirm positive impact.
+
 
 
 ## Resources
